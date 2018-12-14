@@ -8,7 +8,7 @@ namespace App\Http\Controllers;
     use Illuminate\Support\Facades\Validator;
     use JWTAuth;
     use Tymon\JWTAuth\Exceptions\JWTException;
-
+    use DB;
     class UserController extends Controller
 
  
@@ -25,12 +25,29 @@ namespace App\Http\Controllers;
                 return response()->json(['error' => 'could_not_create_token'], 500);
             }
 
+              $data = DB::table('users as a')
+                  ->select('a.id', 'a.first_name', 'a.last_name', 'a.email', 'c.slug as role', 'c.name as role_name')
+                  ->leftjoin('role_users as b', 'b.user_id', '=', 'a.id')
+                  ->leftjoin('roles as c', 'c.id', '=', 'b.role_id')
+                  ->where('email', $request->email)
+                  ->get()->first();
 
-            return response()->json([
-            'access_token' => 'bearer '. $token,
-             
-        ]);
 
+                            
+       $users = [
+            'token' => 'Bearer '.$token, 
+            'user_id' => $data->id,
+            'name' => $data->first_name.' '.$data->last_name,
+            'email' => $data->email, 
+            'role' => $data->role,
+            'role_name' => $data->role_name
+       ];
+        // all good so return the token
+        return response()->json([ 
+            'message' => 'Login Berhasil', 
+            'contents'=> $users,
+            'code' =>200
+        ],200);
  
 
 
@@ -90,7 +107,10 @@ namespace App\Http\Controllers;
 
             public function me()
 		    {
-		       echo 'z';
+                $token = JWTAuth::getToken();
+                $user = JWTAuth::parseToken()->authenticate();
+
+                dd($user);
 		    }
 
             public function destroy( Request $request )
