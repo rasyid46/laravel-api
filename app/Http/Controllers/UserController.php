@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use JWTAuth;
-use Illuminate\Support\Facades\Auth;
-
-use Tymon\JWTAuth\Exceptions\JWTException;
+    use App\User;
+    use Illuminate\Http\Request;
+    use Illuminate\Support\Facades\Hash;
+    use Illuminate\Support\Facades\Validator;
+    use JWTAuth;
+    use Tymon\JWTAuth\Exceptions\JWTException;
 
     class UserController extends Controller
+
+ 
     {
         public function authenticate(Request $request)
         {
             $credentials = $request->only('email', 'password');
-
+ 
             try {
                 if (! $token = JWTAuth::attempt($credentials)) {
                     return response()->json(['error' => 'invalid_credentials'], 400);
@@ -31,13 +31,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
              
         ]);
 
-
-            // return response()->json(compact('token'));
-
-          
-            // return $this->respondWithToken($token);
-         
-        // return response()->json(['error' => 'Unauthorized'], 401);
+ 
 
 
         }
@@ -73,9 +67,9 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
                     try {
 
-                            if (! $user = JWTAuth::parseToken()->authenticate()) {
-                                    return response()->json(['user_not_found'], 404);
-                            }
+                        if (! $user = JWTAuth::parseToken()->authenticate()) {
+                                return response()->json(['user_not_found'], 404);
+                        }
 
                     } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
 

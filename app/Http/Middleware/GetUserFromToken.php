@@ -25,13 +25,20 @@ class GetUserFromToken extends BaseMiddleware
                 $user = $this->auth->authenticate($token);
               
             } catch (TokenExpiredException $e) {
-                return $this->respond('tymon.jwt.expired', 'token_expired', $e->getStatusCode(), [$e]);
+
+               return response()->json(['error' => 'token_expired'], 404);
+
+
+              
             } catch (JWTException $e) {
-                return $this->respond('tymon.jwt.invalid', 'token_invalid', $e->getStatusCode(), [$e]);
+
+                 $message = "token_invalid";
+
+                return response()->json(compact('message'), 404);
             }
 
-            if (! $user) {
-                return $this->respond('tymon.jwt.user_not_found', 'user_not_found', 404);
+            if (! $user) { 
+                return response()->json(['error' => 'user_not_found'], 404);
             }
 
             // $this->events->fire('tymon.jwt.valid', $user);
@@ -40,10 +47,5 @@ class GetUserFromToken extends BaseMiddleware
        
     }
 
-     protected function respond($event, $error, $status, $payload = [])
-    {
-        $response = $this->events->fire($event, $payload, true);
 
-        return $response ?: $this->response->json(['error' => $error], $status);
-    }
 }
