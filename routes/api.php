@@ -24,6 +24,7 @@ Route::post('register', 'UserController@register');
     
 Route::group(['middleware' => ['api.auth']], function() {
     Route::post('me', 'UserController@me');
+    Route::post('logout', 'UserController@destroy');
 });
 
 Route::group(['middleware' => ['jwt.verify']], function() {

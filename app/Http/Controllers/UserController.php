@@ -92,4 +92,11 @@ namespace App\Http\Controllers;
 		    {
 		       echo 'z';
 		    }
+
+            public function destroy( Request $request )
+            {
+                $logout = JWTAuth::invalidate();
+                 return response()->json(['message' => 'logout success'], 200);
+            }
+
     }
